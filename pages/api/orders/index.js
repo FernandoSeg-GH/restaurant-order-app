@@ -1,27 +1,31 @@
 import dbConnect from "../../../util/mongo";
-import Order from "../../../models/Order";
+import Product from "../../../models/Product";
 
-const handler = async (req, res) => {
-  const { method } = req;
+export default async function handler(req, res) {
+  const { method, cookies } = req;
 
-  await dbConnect();
+  const token = cookies.token
+
+  dbConnect();
 
   if (method === "GET") {
     try {
-      const orders = await Order.find();
-      res.status(200).json(orders);
+      const products = await Product.find();
+      res.status(200).json(products);
     } catch (err) {
       res.status(500).json(err);
     }
   }
-  if (method === "POST") {
-    try {
-      const order = await Order.create(req.body);
-      res.status(201).json(order);
-    } catch (err) {
-      res.status(500).json(err);
-    }
-  }
-};
 
-export default handler;
+  if (method === "POST") {
+    if(!token || token !== process.env.token){
+      return res.status(401).json("Not authenticated!")
+    }
+    try {
+      const product = await Product.create(req.body);
+      res.status(201).json(product);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  }
+}
