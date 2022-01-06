@@ -1,3 +1,5 @@
 {
-  "extends": ["next/core-web-vitals", "next/babel", "prettier", "next"]
+  "extends": ["next/core-web-vitals", "next/babel", "prettier", "next"],
+  "parser": "babel-eslint",
+  "plugins": ["react"]
 }
